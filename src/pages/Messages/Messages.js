@@ -35,38 +35,38 @@ const Messages = ({route, navigation}) => {
     //check if the page is rendered to prevent memory leaks
     let isRendered = true;
     //header components
-    if (isRendered) {
-      database()
-        .ref(`Rooms/${key}`)
-        .child('roomOwner')
-        .on('value', snapshot => {
-          const ownerID = snapshot.val();
+    database()
+      .ref(`Rooms/${key}`)
+      .child('roomOwner')
+      .on('value', snapshot => {
+        const ownerID = snapshot.val();
+        if (isRendered) {
           setIsOwner(ownerID == auth().currentUser.uid);
-        });
+        }
+      });
 
-      navigation.setOptions({
-        title: roomName,
-        headerRight: () =>
-          isOwner && (
-            <Icon
-              name="card-remove-outline"
-              style={{marginRight: 15}}
-              color={ColorCode('grey5')}
-              size={30}
-              onPress={handleRemoveRoomModalToggle}
-            />
-          ),
-        headerLeft: () => (
+    navigation.setOptions({
+      title: roomName,
+      headerRight: () =>
+        isOwner && (
           <Icon
-            name="chevron-left"
-            style={{marginLeft: 15}}
+            name="card-remove-outline"
+            style={{marginRight: 15}}
             color={ColorCode('grey5')}
             size={30}
-            onPress={() => navigation.navigate('Rooms')}
+            onPress={handleRemoveRoomModalToggle}
           />
         ),
-      });
-    }
+      headerLeft: () => (
+        <Icon
+          name="chevron-left"
+          style={{marginLeft: 15}}
+          color={ColorCode('grey5')}
+          size={30}
+          onPress={() => navigation.navigate('Rooms')}
+        />
+      ),
+    });
     return () => {
       isRendered = false;
     };
@@ -76,15 +76,17 @@ const Messages = ({route, navigation}) => {
     //check if the page is rendered to prevent memory leaks
     let isRendered = true;
     //firebase actions
-    if (isRendered) {
-      database()
-        .ref(`Rooms/${key}/Messages/`)
-        .on('value', snapshot => {
-          const contentData = snapshot.val();
-          const parsedData = parseContentData(contentData || {});
+    database()
+      .ref(`Rooms/${key}/Messages/`)
+      .on('value', snapshot => {
+        const contentData = snapshot.val();
+        const parsedData = parseContentData(contentData || {});
+
+        if (isRendered) {
           setContentList(parsedData);
-        });
-    }
+        }
+      });
+
     return () => {
       isRendered = false;
     };

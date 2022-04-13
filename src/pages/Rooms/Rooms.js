@@ -103,7 +103,7 @@ const Rooms = ({navigation}) => {
   useEffect(() => {
     //check if the page is rendered to prevent memory leaks
     let isRendered = true;
-    // Set Roomlist from firebase
+    // Set Room List from firebase
     database()
       .ref('Rooms/')
       .on('value', snapshot => {
