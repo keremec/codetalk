@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, KeyboardAvoidingView} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import auth, {firebase} from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 import MessageCard from '../../components/MessageCard';
@@ -16,6 +16,15 @@ const Messages = ({route, navigation}) => {
   const [contentList, setContentList] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const {roomName, key} = route.params;
+  const user = firebase.auth().currentUser;
+  const [username, setUserName] = useState('User');
+
+  database()
+    .ref('Profiles/' + user.uid + '/username')
+    .once('value')
+    .then(snapshot => {
+      setUserName(snapshot.val());
+    });
 
   const [removeRoomModalVisible, setRemoveRoomModalVisible] = useState(false);
 
@@ -97,11 +106,9 @@ const Messages = ({route, navigation}) => {
   };
 
   const sendMessage = content => {
-    const userName = auth().currentUser.email;
-
     const contentObject = {
       text: content,
-      name: userName.split('@')[0],
+      name: username,
       date: new Date().toISOString(),
     };
     database().ref(`Rooms/${key}/Messages/`).push(contentObject);

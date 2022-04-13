@@ -23,7 +23,7 @@ const RoomModal = ({visible, onClose, onSend}) => {
       <View style={styles.container}>
         <TextInput
           style={styles.text}
-          placeholder="Enter a Channel Name"
+          placeholder="Enter a Room Name"
           placeholderTextColor={ColorCode('grey3')}
           onChangeText={setText}
           autoCorrect={false}

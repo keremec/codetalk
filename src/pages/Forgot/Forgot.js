@@ -40,7 +40,7 @@ export default function ({navigation}) {
       setLoading(true);
       await auth().sendPasswordResetEmail(email);
       showMessage({
-        message: 'Password reset link successfully send to your email',
+        message: 'Password reset link successfully sent to your email.',
         type: 'success',
         duration: 3000,
       });
