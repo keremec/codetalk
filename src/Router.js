@@ -13,6 +13,7 @@ import Rooms from './pages/Rooms';
 import auth from '@react-native-firebase/auth';
 import ColorCode from './utils/ColorCode';
 import Messages from './pages/Messages';
+import {StatusBar} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,7 @@ export default function Router() {
 
   //Page Stacks
   const AuthStack = () => {
+    StatusBar.setBarStyle('light-content', true);
     return (
       <Stack.Navigator
         theme={DarkTheme}

@@ -24,6 +24,7 @@ const Input = ({
         autoCorrect={false}
         placeholderTextColor={ColorCode('grey2')}
         keyboardType={keyboardType}
+        keyboardAppearance={'dark'}
       />
     </View>
   );

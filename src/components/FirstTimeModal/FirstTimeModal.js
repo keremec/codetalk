@@ -26,6 +26,8 @@ const ProfileModal = ({visible, onClose, onSend}) => {
           onChangeText={setText}
           autoCorrect={false}
           maxLength={20}
+          autoCapitalize={'none'}
+          keyboardAppearance={'dark'}
         />
         <ButtonBox text="Confirm" onPress={() => onSend(text)} />
       </View>

@@ -42,13 +42,33 @@ const Rooms = ({navigation}) => {
 
   const handleSendRoomName = roomName => {
     handleRoomModalToggle();
+    //create object for firebase
     const contentObject = {
       roomName: roomName,
       roomOwner: auth().currentUser.uid,
     };
-    //todo ustte cıkmıyor
+    //push data to firebase
     const postkey = database().ref('Rooms/').push(contentObject);
-    navigation.navigate('Messages', postkey);
+    //create room object with key for navigation parameter
+    var roomkey = JSON.stringify(postkey);
+    roomkey = roomkey.substring(
+      roomkey.lastIndexOf('/') + 1,
+      roomkey.length - 1,
+    );
+    const newroom = {
+      key: roomkey,
+      roomName: roomName,
+      roomOwner: auth().currentUser.uid,
+    };
+    //create welcome room message
+    const newRoomMessage = {
+      text: 'Welcome to the ' + roomName + '!',
+      name: '/>codetalk',
+      date: new Date().toISOString(),
+    };
+    database().ref(`Rooms/${roomkey}/Messages/`).push(newRoomMessage);
+    //navigate to the room
+    navigation.navigate('Messages', newroom);
   };
 
   const handleSendUserName = userName => {
@@ -112,7 +132,7 @@ const Rooms = ({navigation}) => {
           rooms.push({
             key: child.key,
             roomName: child.val().roomName,
-            userName: child.val().owner,
+            roomOwner: child.val().roomOwner,
           });
         });
         if (isRendered) {

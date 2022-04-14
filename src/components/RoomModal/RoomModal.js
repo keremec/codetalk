@@ -28,6 +28,8 @@ const RoomModal = ({visible, onClose, onSend}) => {
           onChangeText={setText}
           autoCorrect={false}
           maxLength={22}
+          autoCapitalize={'none'}
+          keyboardAppearance={'dark'}
         />
         <ButtonBox text="Create" onPress={() => onSend(text)} />
       </View>

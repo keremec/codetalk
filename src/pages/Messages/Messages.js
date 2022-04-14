@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, KeyboardAvoidingView} from 'react-native';
-import auth, {firebase} from '@react-native-firebase/auth';
+import {firebase} from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
 import MessageCard from '../../components/MessageCard';
@@ -12,10 +12,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ColorCode from '../../utils/ColorCode';
 import RemoveRoomModal from '../../components/RemoveRoomModal/RemoveRoomModal';
 
-const Messages = ({route, navigation}) => {
+const Messages = ({navigation, route}) => {
   const [contentList, setContentList] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
-  const {roomName, key} = route.params;
+  const {key, roomName, roomOwner} = route.params;
   const user = firebase.auth().currentUser;
   const [username, setUserName] = useState('User');
 
@@ -44,15 +44,9 @@ const Messages = ({route, navigation}) => {
     //check if the page is rendered to prevent memory leaks
     let isRendered = true;
     //header components
-    database()
-      .ref(`Rooms/${key}`)
-      .child('roomOwner')
-      .on('value', snapshot => {
-        const ownerID = snapshot.val();
-        if (isRendered) {
-          setIsOwner(ownerID == auth().currentUser.uid);
-        }
-      });
+    if (isRendered) {
+      setIsOwner(user.uid === roomOwner);
+    }
 
     navigation.setOptions({
       title: roomName,
@@ -79,7 +73,14 @@ const Messages = ({route, navigation}) => {
     return () => {
       isRendered = false;
     };
-  }, [handleRemoveRoomModalToggle, isOwner, key, navigation, roomName]);
+  }, [
+    handleRemoveRoomModalToggle,
+    isOwner,
+    navigation,
+    roomName,
+    roomOwner,
+    user.uid,
+  ]);
 
   useEffect(() => {
     //check if the page is rendered to prevent memory leaks
@@ -90,7 +91,10 @@ const Messages = ({route, navigation}) => {
       .on('value', snapshot => {
         const contentData = snapshot.val();
         const parsedData = parseContentData(contentData || {});
-
+        console.log(parsedData);
+        if (parsedData[0] == null) {
+          navigation.navigate('Rooms');
+        }
         if (isRendered) {
           setContentList(parsedData);
         }
@@ -99,7 +103,7 @@ const Messages = ({route, navigation}) => {
     return () => {
       isRendered = false;
     };
-  }, [key]);
+  }, [key, navigation]);
 
   const handleSendMessage = content => {
     sendMessage(content);

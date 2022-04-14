@@ -18,7 +18,9 @@ const MessageCard = ({item}) => {
         <Text style={[Styles.date, Styles.metadata]}>{formattedDate}</Text>
       </View>
       <View style={Styles.contentContainer}>
-        <Text style={Styles.content}>{text}</Text>
+        <Text selectable={true} style={Styles.content}>
+          {text}
+        </Text>
       </View>
     </View>
   );
